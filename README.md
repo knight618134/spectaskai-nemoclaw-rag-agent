@@ -33,6 +33,8 @@ Implemented:
 - keyword retrieval
 - offline grounded answer mode
 - OpenProject API v3 client boundary
+- JSON runtime wrapper for `spec_*` tools
+- `spec-rag-agent` skill draft
 - CLI demo
 - basic unit tests
 
@@ -65,6 +67,12 @@ docs/
 
 tests/
   test_rag_pipeline.py
+
+tools/spec-rag-tool/
+  README.md             JSON runtime wrapper notes
+
+openclaw-skills/spec-rag-agent/
+  SKILL.md              intent mapping for spec RAG workflows
 ```
 
 ## Local Demo
@@ -91,6 +99,25 @@ Run tests:
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests
+```
+
+## Runtime Tool Demo
+
+The `spec_*` capabilities are also exposed through a JSON command boundary. This is the shape a future OpenClaw/NemoClaw plugin can wrap.
+
+```bash
+PYTHONPATH=src python3 -m spectaskai.tool_runtime spec_ingest \
+  --params '{"markdown_file":"data/home-specs/router-demo.md"}'
+```
+
+```bash
+PYTHONPATH=src python3 -m spectaskai.tool_runtime spec_search \
+  --params '{"query":"GNSS timing priority","limit":3}'
+```
+
+```bash
+PYTHONPATH=src python3 -m spectaskai.tool_runtime spec_answer \
+  --params '{"question":"What should happen when PTP degrades and GNSS is locked?","limit":3}'
 ```
 
 ## Why `nemotron_client.py` and `openproject_client.py`

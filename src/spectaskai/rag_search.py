@@ -22,6 +22,10 @@ STOP_WORDS = {
     "or",
     "the",
     "to",
+    "what",
+    "when",
+    "should",
+    "happen",
     "with",
 }
 
@@ -47,9 +51,10 @@ def search_chunks(query: str, chunks: list[SpecChunk], limit: int = 5) -> list[S
             continue
 
         term_score = sum(query_counts[term] * chunk_counts[term] for term in matched_terms)
+        coverage_bonus = len(matched_terms) / max(len(set(query_terms)), 1)
         section_bonus = 1.5 if any(term in tokenize(chunk.section) for term in query_counts) else 1.0
         length_penalty = math.log(len(chunk_terms) + 10)
-        score = section_bonus * term_score / length_penalty
+        score = section_bonus * (term_score + coverage_bonus) / length_penalty
         results.append(SearchResult(chunk=chunk, score=round(score, 4), matched_terms=matched_terms))
 
     return sorted(results, key=lambda result: result.score, reverse=True)[:limit]

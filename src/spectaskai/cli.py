@@ -29,6 +29,7 @@ def main() -> int:
     answer.add_argument("question")
     answer.add_argument("--index", type=Path, default=Path("data/indexes/spec_index.jsonl"))
     answer.add_argument("--limit", type=int, default=5)
+    answer.add_argument("--json", action="store_true")
 
     args = parser.parse_args()
 
@@ -50,7 +51,21 @@ def main() -> int:
     if args.command == "answer":
         chunks = read_jsonl(args.index)
         results = search_chunks(args.question, chunks, limit=args.limit)
-        print(NemotronClient().answer_with_sources(args.question, results))
+        answer_text = NemotronClient().answer_with_sources(args.question, results)
+        if args.json:
+            print(
+                json.dumps(
+                    {
+                        "question": args.question,
+                        "answer": answer_text,
+                        "sources": [result.to_json() for result in results],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+        else:
+            print(answer_text)
         return 0
 
     return 1

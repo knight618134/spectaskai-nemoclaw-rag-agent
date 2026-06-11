@@ -35,10 +35,17 @@ src/spectaskai/
   rag_search.py          keyword retrieval
   nemotron_client.py     offline answer now, NIM-compatible boundary later
   openproject_client.py  OpenProject API v3 boundary
+  tool_runtime.py        JSON command boundary for spec_* tools
   cli.py                 local demo commands
 
 data/home-specs/
   router-demo.md         safe toy spec
+
+tools/spec-rag-tool/
+  README.md              runtime tool contract notes
+
+openclaw-skills/spec-rag-agent/
+  SKILL.md               intent mapping for spec RAG workflows
 ```
 
 ## Local Demo
@@ -61,6 +68,13 @@ Generate an offline grounded answer:
 PYTHONPATH=src python3 -m spectaskai.cli answer "What should happen when PTP degrades and GNSS is locked?"
 ```
 
+Call the runtime wrapper:
+
+```bash
+PYTHONPATH=src python3 -m spectaskai.tool_runtime spec_answer \
+  --params '{"question":"What should happen when PTP degrades and GNSS is locked?","limit":3}'
+```
+
 ## Portfolio Story
 
 ```text
@@ -71,6 +85,6 @@ Built a lightweight RAG and agent-tool backend for an O-RAN operations console. 
 
 - Add unit tests for Markdown indexing and retrieval.
 - Add PDF ingestion behind the same chunk schema.
-- Add a `spec-rag-tool` OpenClaw runtime tool wrapper.
+- Package the `spec-rag-tool` JSON wrapper as an OpenClaw plugin once the target plugin API is pinned.
 - Add an `openproject-tool` wrapper that uses `OpenProjectClient`.
 - Connect the static frontend to a local mock API or FastAPI server.
